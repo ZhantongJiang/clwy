@@ -4,8 +4,14 @@ import { StyleSheet, Text, View } from 'react-native';
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <View>
+        <Text style={[{ fontSize: 50, width: 200 }, styles.title]}>
+          欢迎来到长乐未央 React Native 课程!
+        </Text>
+      </View>
+      <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ff7f6f' }}>
+        Hello React Native!
+      </Text>
     </View>
   );
 }
@@ -17,4 +23,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#e29447',
+  }
 });
