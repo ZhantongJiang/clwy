@@ -1,11 +1,13 @@
 import { Button, StyleSheet, Text, View, TextInput } from 'react-native';
 import Loading from './components/shared/Loading';
+import NetworkError from './components/shared/NetworkError';
 import { useState, useEffect } from 'react';
 
 export default function App() {
   const [courses, setCourses] = useState([]);
   const [keyword, setKeyword] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   /**
    * 获取搜索接口课程数据
@@ -13,11 +15,11 @@ export default function App() {
    */
   const fetchData = async () => {
     try {
-      const res = await fetch(
-        `http://192.168.17.105:3000/search?q=${keyword}`
-      );
+      const res = await fetch(`http://192.168.17.105:3000/search?q=${keyword}`);
       const { data } = await res.json();
       setCourses(data.courses);
+    } catch (err) {
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -28,8 +30,15 @@ export default function App() {
     fetchData();
   }, [keyword]); // 添加空依赖数组，确保只在组件挂载时执行一次
 
+  
+  // 加载中
   if (loading) {
     return <Loading />;
+  }
+
+  // 网络错误提示
+  if (error) {
+    return <NetworkError/>;
   }
 
   return (
