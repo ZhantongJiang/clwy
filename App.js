@@ -2,6 +2,7 @@ import { Button, StyleSheet, Text, View, TextInput } from 'react-native';
 import Loading from './components/shared/Loading';
 import NetworkError from './components/shared/NetworkError';
 import { useState, useEffect } from 'react';
+import request, { get } from './utils/request';
 
 export default function App() {
   const [courses, setCourses] = useState([]);
@@ -15,8 +16,15 @@ export default function App() {
    */
   const fetchData = async () => {
     try {
-      const res = await fetch(`http://192.168.17.105:3000/search?q=${keyword}`);
-      const { data } = await res.json();
+      // 使用 request
+      // const { data } = await request(`/search?q=${keyword}`);
+      // const { data } = await request('/search', {
+      //   params: { q: keyword },
+      // });
+
+      // 使用 get
+      // const { data } = await get(`/search?q=${keyword}`);
+      const { data } = await get('/search', { q: keyword });
       setCourses(data.courses);
     } catch (err) {
       setError(true);
@@ -24,6 +32,13 @@ export default function App() {
       setLoading(false);
     }
   };
+
+  // 重新加载
+  const onReload = async () => {
+    setLoading(true);
+    setError(false);
+    await fetchData();
+  }
 
   // 默认情况下，只要组件发生重新渲染，useEffect 就会再次执行。
   useEffect(() => {
@@ -38,7 +53,7 @@ export default function App() {
 
   // 网络错误提示
   if (error) {
-    return <NetworkError/>;
+    return <NetworkError title='🤪唉呀妈呀，网坏了，咋回事呢？' onReload={onReload}/>;
   }
 
   return (
