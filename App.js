@@ -1,51 +1,14 @@
-import { Button, StyleSheet, Text, View, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TextInput } from 'react-native';
+import { useState, useEffect } from 'react';
 import Loading from './components/shared/Loading';
 import NetworkError from './components/shared/NetworkError';
-import { useState, useEffect } from 'react';
-import request, { get } from './utils/request';
+import useFetchData from './hooks/useFetchData';
 
 export default function App() {
-  const [courses, setCourses] = useState([]);
   const [keyword, setKeyword] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const { data, loading, error, onReload } = useFetchData('/search', { q: keyword });
+  const { courses } = data;
 
-  /**
-   * 获取搜索接口课程数据
-   * @returns {Promise<void>}
-   */
-  const fetchData = async () => {
-    try {
-      // 使用 request
-      // const { data } = await request(`/search?q=${keyword}`);
-      // const { data } = await request('/search', {
-      //   params: { q: keyword },
-      // });
-
-      // 使用 get
-      // const { data } = await get(`/search?q=${keyword}`);
-      const { data } = await get('/search', { q: keyword });
-      setCourses(data.courses);
-    } catch (err) {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 重新加载
-  const onReload = async () => {
-    setLoading(true);
-    setError(false);
-    await fetchData();
-  }
-
-  // 默认情况下，只要组件发生重新渲染，useEffect 就会再次执行。
-  useEffect(() => {
-    fetchData();
-  }, [keyword]); // 添加空依赖数组，确保只在组件挂载时执行一次
-
-  
   // 加载中
   if (loading) {
     return <Loading />;
